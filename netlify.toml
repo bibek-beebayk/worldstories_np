@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "build/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The React Router Vite adapter generates the SSR function and its catch-all route.
+# VITE_API_URL must be set in Netlify's environment before building (including /api).
