@@ -1,9 +1,10 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteError } from "react-router";
 import type { ReactNode } from "react";
 import "./index.css";
+import { errorMeta } from "./lib/buildMeta";
 
 export function meta() {
-  return [{ title: "विश्वकथा — नेपाली" }];
+  return errorMeta();
 }
 
 export function links() {
@@ -20,6 +21,9 @@ export function Layout({ children }: { children: ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {import.meta.env.VITE_GOOGLE_SITE_VERIFICATION && (
+          <meta name="google-site-verification" content={import.meta.env.VITE_GOOGLE_SITE_VERIFICATION} />
+        )}
         <Meta />
         <Links />
       </head>

@@ -3,10 +3,19 @@ import { Link } from "react-router";
 import type { Route } from "./+types/home";
 import { storyApi } from "../api/story";
 import StoryCard from "../components/StoryCard";
+import { buildMeta, errorMeta } from "../lib/buildMeta";
 
 export async function loader() {
   const stories = await storyApi.getStories();
   return { stories: stories.results.slice(0, 6) };
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  if (!data) return errorMeta();
+  return buildMeta({
+    title: "विश्वकथा — संसारभरिका कथा, नेपालीमा",
+    description: "संसारका कुनाकुनाबाट छानिएका कथा नेपालीमा पढ्नुहोस्। लोककथा, साहसिक कथा र नयाँ कथासँगै नयाँ संसार चियाउनुहोस्।",
+  });
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

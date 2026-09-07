@@ -86,4 +86,52 @@ serve SSR pages. No `/index.html` SPA rewrite is needed.
 
 Run `npm run test:netlify` to verify the generated function's route configuration
 and rendered homepage, catalogue and chapter responses against test fixtures.
-Sitemap, domain-specific metadata and remaining launch tasks are tracked separately.
+SEO and deployment verification are described below.
+
+## SEO and launch
+
+Set `VITE_SITE_URL` to the final Nepali site origin before building, e.g. your
+chosen HTTPS domain without a path. Set **the same origin** as `NP_SITE_URL` on
+the Railway backend. `VITE_SITE_URL` never defaults to worldstories.net: unset
+builds emit no canonical, use `noindex`, and return 503 for `/robots.txt`.
+
+Each page emits Nepali description, Open Graph and Twitter metadata. Story covers
+are used as social images with the existing WorldStories brand image as fallback.
+Catalogue page numbers retain their own canonicals; genre/sort variants retain
+self-canonicals but use `noindex, follow`. Unknown routes have no canonical and
+are not indexable. The incoming request hostname cannot change canonical origins.
+
+`/robots.txt` is an SSR text resource pointing at this site's `/sitemap.xml`.
+Netlify proxies `/sitemap.xml` to the production backend's `/api/sitemap-np.xml`
+using a forced 200 rewrite; that path is excluded from the SSR function. If using
+a different backend, update the proxy destination in `netlify.toml` as well as
+`VITE_API_URL`. The backend sitemap paths must remain `NP_CATALOGUE_PATH=kathaharu`
+and `NP_STORY_PATH_PREFIX=katha` (the defaults).
+
+Local production verification, using a test origin only:
+
+```sh
+VITE_SITE_URL=https://nepali.example npm run test:seo
+```
+
+For launch, configure the real domain in Netlify, set its build variables, and
+redeploy. Add the origin to the backend's existing comma-separated
+`EXTRA_ALLOWED_ORIGINS` without removing current entries. Verify the deployed site:
+
+```sh
+python3 scripts/verify-launch.py https://YOUR-NEPALI-DOMAIN https://worldstories-b-production.up.railway.app/api
+```
+
+This read-only check validates the public robots/sitemap, every sitemap URL's
+HTTP status and canonical, and API CORS response headers. Also run a browser
+fetch from the deployed origin for the end-to-end CORS check.
+
+Create a separate Search Console URL-prefix property for the final HTTPS origin.
+If using HTML-tag verification, set the public `VITE_GOOGLE_SITE_VERIFICATION`
+token in Netlify, rebuild and verify ownership. Submit this site's `/sitemap.xml`
+after the launch checks pass. Domain-property DNS verification is also supported
+by Search Console and requires no frontend token. Submission needs access to the
+property; a successful local test does not submit it.
+
+References: [Netlify proxies](https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/)
+and [Google sitemap submission](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap).

@@ -7,3 +7,9 @@
 
 # The React Router Vite adapter generates the SSR function and its catch-all route.
 # VITE_API_URL must be set in Netlify's environment before building (including /api).
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "https://worldstories-b-production.up.railway.app/api/sitemap-np.xml"
+  status = 200
+  force = true

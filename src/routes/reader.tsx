@@ -4,7 +4,8 @@ import { storyApi } from "../api/story";
 import CoverImage from "../components/CoverImage";
 import SimpleReader from "../components/SimpleReader";
 import { genreLabel, nepaliNumber } from "../lib/nepali";
-import { chapterPath } from "../lib/paths";
+import { chapterPath, storyPath } from "../lib/paths";
+import { buildMeta, errorMeta } from "../lib/buildMeta";
 import { sanitizeStoryHtml } from "../lib/sanitizeHtml.server";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -27,8 +28,18 @@ export async function loader({ params }: Route.LoaderArgs) {
   };
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  return [{ title: data ? `${data.story.title} — विश्वकथा` : "कथा भेटिएन — विश्वकथा" }];
+export function meta({ data, params }: Route.MetaArgs) {
+  if (!data) return errorMeta();
+  const { story, chapter } = data;
+  const chapterTitle = params.chapterSlug && chapter ? ` — ${chapter.title}` : "";
+  return buildMeta({
+    title: `${story.title}${chapterTitle} — विश्वकथा`,
+    description: `विश्वकथामा «${story.title}»${chapterTitle} पढ्नुहोस्।${story.author ? ` लेखक: ${story.author}।` : ""} संसारभरिका छानिएका कथाको सङ्ग्रह।`,
+    path: params.chapterSlug ? chapterPath(story.slug, params.chapterSlug) : storyPath(story.slug),
+    image: story.cover_image,
+    type: "article",
+    noIndex: !chapter,
+  });
 }
 
 export default function Reader({ loaderData }: Route.ComponentProps) {

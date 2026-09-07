@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { buildMeta, errorMeta } from "../lib/buildMeta";
 import { Form, Link } from "react-router";
 import type { Route } from "./+types/catalogue";
 import { storyApi } from "../api/story";
@@ -12,8 +13,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { stories, genres, filters };
 }
 
-export function meta() {
-  return [{ title: "कथाहरू — विश्वकथा" }];
+export function meta({ data }: Route.MetaArgs) {
+  if (!data) return errorMeta();
+  const { filters } = data;
+  const params = new URLSearchParams();
+  if (filters.page > 1) params.set("page", String(filters.page));
+  if (filters.genres[0]) params.set("genre", String(filters.genres[0]));
+  if (filters.sort !== "recent") params.set("sort", filters.sort);
+  const pageLabel = filters.page > 1 ? ` — पृष्ठ ${nepaliNumber(filters.page)}` : "";
+  return buildMeta({
+    title: `कथाहरू${pageLabel} — विश्वकथा`,
+    description: "आफूलाई मन पर्ने विधाका कथा छान्नुहोस्। विश्वकथाको नेपाली सङ्ग्रहमा नयाँ र मन पराइएका कथा पढ्नुहोस्।",
+    path: `/kathaharu${params.size ? `?${params}` : ""}`,
+    noIndex: filters.genres.length > 0 || filters.sort !== "recent",
+  });
 }
 
 export default function Catalogue({ loaderData }: Route.ComponentProps) {
