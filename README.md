@@ -45,7 +45,7 @@ UI font is Noto Sans Devanagari, followed by Inter, loaded through Google Fonts.
 Routes:
 
 - `/`: Nepali hero and up to six latest selected stories.
-- `/kathaharu`: catalogue with genre, sort and page query parameters. The native GET
+- `/kathaharu`: catalogue with search (`q`), genre, sort and page query parameters. The native GET
   form works without JavaScript and resets to page one when filters change. Genre
   counts come from the editorial-flag-scoped directory.
 - `/katha/:slug`: story header and first chapter in chapter order.
@@ -143,3 +143,26 @@ The shared document head installs Google tag `G-42LZ2ZP8QK` once per page.
 unset by default. The Google-provided initialization runs once in the document
 head, without an additional client navigation page-view handler. Rebuild and
 redeploy to apply changes, then verify collection in the GA property.
+
+Catalogue search forwards the backend's existing `q` filter and remains scoped by
+`show_in_nepali_site=true`. Search terms are preserved across numbered page links,
+and submitting the form resets the page. Search-result URLs use `noindex, follow`
+and self-canonicals. No client search index or duplicated content is stored.
+
+The parent frontend now loads Devanagari faces for its UI and reader, including
+EPUB iframe stylesheets. Cross-site hreflang is still pending the final Nepali
+origin and coordinated reciprocal language links on both sites.
+
+## Separate Nepalikatha analytics
+
+The shared layout sends anonymous visit events to `/api/nepalikatha/events/`.
+The chapter reader sends active time in short slices, pausing while hidden,
+unfocused, off-screen or idle for 60 seconds. These writes use their own backend
+table and do not call main-site analytics or reading-progress endpoints. Browser
+and tab identifiers use `nepalikatha.*` storage keys; no search text is sent.
+
+Deploy backend migration `stats.0025_nepalikatha_events` before the new frontend.
+Both the web admin and Flutter app read `/api/admin/analytics/nepalikatha/` with
+the existing superuser login and range selector. Data starts accumulating after
+this tracker is deployed; existing Google Analytics collection remains separate.
+See `../NEPALIKATHA_ANALYTICS_TODO.md` for definitions, verification and rollout.
