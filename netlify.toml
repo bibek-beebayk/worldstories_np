@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  VITE_GA_MEASUREMENT_ID = "G-42LZ2ZP8QK"
 
 # The React Router Vite adapter generates the SSR function and its catch-all route.
 # VITE_API_URL must be set in Netlify's environment before building (including /api).

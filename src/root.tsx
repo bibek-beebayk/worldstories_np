@@ -3,6 +3,14 @@ import type { ReactNode } from "react";
 import "./index.css";
 import { errorMeta } from "./lib/buildMeta";
 
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim();
+const GA_BOOTSTRAP_SCRIPT = GA_MEASUREMENT_ID && /^G-[A-Z0-9]+$/.test(GA_MEASUREMENT_ID)
+  ? `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', ${JSON.stringify(GA_MEASUREMENT_ID)});`
+  : null;
+
 export function meta() {
   return errorMeta();
 }
@@ -19,6 +27,12 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="ne">
       <head>
+        {GA_MEASUREMENT_ID && GA_BOOTSTRAP_SCRIPT && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`} />
+            <script dangerouslySetInnerHTML={{ __html: GA_BOOTSTRAP_SCRIPT }} />
+          </>
+        )}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {import.meta.env.VITE_GOOGLE_SITE_VERIFICATION && (

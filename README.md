@@ -135,3 +135,11 @@ property; a successful local test does not submit it.
 
 References: [Netlify proxies](https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/)
 and [Google sitemap submission](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap).
+
+## Analytics
+
+The shared document head installs Google tag `G-42LZ2ZP8QK` once per page.
+`VITE_GA_MEASUREMENT_ID` is set in `netlify.toml`; local development leaves it
+unset by default. The Google-provided initialization runs once in the document
+head, without an additional client navigation page-view handler. Rebuild and
+redeploy to apply changes, then verify collection in the GA property.
