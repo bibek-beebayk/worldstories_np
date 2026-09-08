@@ -7,6 +7,11 @@ export default function SiteLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <AnalyticsTracker />
+      {navigation.state !== "idle" && (
+        <div className="fixed top-0 left-0 z-50 h-1 w-full overflow-hidden bg-primary/20">
+          <div className="h-full w-1/3 animate-loading-bar bg-primary" />
+        </div>
+      )}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:p-4">मुख्य सामग्रीमा जानुहोस्</a>
       <header className="border-b bg-background">
         <div className="container flex flex-wrap items-center justify-between gap-4 py-5">

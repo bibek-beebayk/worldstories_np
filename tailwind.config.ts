@@ -95,11 +95,16 @@ export default {
           "0%": { transform: "rotateY(0deg)" },
           "100%": { transform: "rotateY(-180deg)" },
         },
+        "loading-bar": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(300%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "page-turn": "page-turn 1s ease-in-out infinite",
+        "loading-bar": "loading-bar 1s ease-in-out infinite",
       },
     },
   },
