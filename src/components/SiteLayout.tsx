@@ -16,7 +16,7 @@ export default function SiteLayout() {
       <header className="border-b bg-background">
         <div className="container flex flex-wrap items-center justify-between gap-4 py-5">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-            <BookOpen className="h-6 w-6 text-primary" aria-hidden="true" />विश्वकथा
+            <BookOpen className="h-6 w-6 text-primary" aria-hidden="true" />नेपाली कथा
           </Link>
           <nav aria-label="मुख्य नेभिगेसन" className="flex gap-6 text-sm font-medium">
             <NavLink to="/" end className={({ isActive }) => isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}>गृहपृष्ठ</NavLink>
@@ -29,7 +29,7 @@ export default function SiteLayout() {
       <footer className="mt-16 border-t bg-secondary/50">
         <div className="container flex flex-wrap justify-between gap-4 py-8 text-sm text-muted-foreground">
           <p>संसारभरिका कथा, नेपालीमा।</p>
-          <a href="https://worldstories.net" className="underline underline-offset-4 hover:text-primary">विश्वकथा मूल वेबसाइट</a>
+          <a href="https://worldstories.net" className="underline underline-offset-4 hover:text-primary">Worldstories Main Site</a>
         </div>
       </footer>
     </div>
