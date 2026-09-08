@@ -1,3 +1,4 @@
+import { useReadingAnalytics } from "./AnalyticsTracker";
 import { Link } from "react-router";
 import type { ChapterMetadata } from "../api/types";
 import { chapterPath } from "../lib/paths";
@@ -6,12 +7,13 @@ interface SimpleReaderProps {
   storySlug: string;
   language: string;
   // content is sanitized by the server loader before reaching this component.
-  chapter: { title: string; content: string } | null;
+  chapter: { slug: string; title: string; content: string } | null;
   previous?: ChapterMetadata;
   next?: ChapterMetadata;
 }
 
 export default function SimpleReader({ storySlug, language, chapter, previous, next }: SimpleReaderProps) {
+  useReadingAnalytics(storySlug, chapter?.slug);
   return (
     <section className="mx-auto max-w-3xl pt-10">
       {chapter ? (

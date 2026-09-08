@@ -23,7 +23,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       about: sanitizeStoryHtml(story.about),
     },
     chapters,
-    chapter: chapter ? { title: chapter.title, content: sanitizeStoryHtml(chapter.content) } : null,
+    chapter: chapter ? { slug: selected.slug, title: chapter.title, content: sanitizeStoryHtml(chapter.content) } : null,
     chapterIndex,
   };
 }

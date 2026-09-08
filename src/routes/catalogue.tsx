@@ -20,12 +20,13 @@ export function meta({ data }: Route.MetaArgs) {
   if (filters.page > 1) params.set("page", String(filters.page));
   if (filters.genres[0]) params.set("genre", String(filters.genres[0]));
   if (filters.sort !== "recent") params.set("sort", filters.sort);
+  if (filters.q) params.set("q", filters.q);
   const pageLabel = filters.page > 1 ? ` — पृष्ठ ${nepaliNumber(filters.page)}` : "";
   return buildMeta({
-    title: `कथाहरू${pageLabel} — विश्वकथा`,
+    title: `${filters.q ? `«${filters.q}» को खोजी` : "कथाहरू"}${pageLabel} — विश्वकथा`,
     description: "आफूलाई मन पर्ने विधाका कथा छान्नुहोस्। विश्वकथाको नेपाली सङ्ग्रहमा नयाँ र मन पराइएका कथा पढ्नुहोस्।",
     path: `/kathaharu${params.size ? `?${params}` : ""}`,
-    noIndex: filters.genres.length > 0 || filters.sort !== "recent",
+    noIndex: Boolean(filters.q) || filters.genres.length > 0 || filters.sort !== "recent",
   });
 }
 
@@ -37,7 +38,13 @@ export default function Catalogue({ loaderData }: Route.ComponentProps) {
     <div className="container py-12">
       <h1 className="text-3xl font-bold">कथाहरू</h1>
       <p className="mt-3 leading-loose text-muted-foreground">आफूलाई मन पर्ने कथा छान्नुहोस् र पढ्न थाल्नुहोस्।</p>
-      <Form method="get" action="/kathaharu" key={`${filters.genres[0]}-${filters.sort}`} className="my-8 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-5">
+      <Form method="get" action="/kathaharu" key={`${filters.genres[0]}-${filters.sort}-${filters.q}`} className="my-8 flex flex-wrap items-end gap-4 rounded-lg border bg-card p-5">
+        <div className="flex w-full flex-col gap-2">
+          <label htmlFor="q" className="text-sm font-medium">कथा खोज्नुहोस्</label>
+          <input id="q" name="q" type="search" defaultValue={filters.q}
+            placeholder="कथाको नाम, लेखक वा विषय लेख्नुहोस्"
+            className="w-full rounded-md border bg-background px-3 py-2" />
+        </div>
         <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto">
           <label htmlFor="genre" className="text-sm font-medium">विधा</label>
           <select id="genre" name="genre" defaultValue={filters.genres[0] || ""} className="w-full rounded-md border bg-background px-3 py-2 sm:w-64">
@@ -57,9 +64,9 @@ export default function Catalogue({ loaderData }: Route.ComponentProps) {
           </select>
         </div>
         <button type="submit" className="rounded-md bg-primary px-5 py-2 font-medium text-primary-foreground hover:opacity-90">कथा खोज्नुहोस्</button>
-        {filters.genres.length > 0 && <Link to="/kathaharu" className="px-2 py-2 text-sm text-primary underline">सबै कथा हेर्नुहोस्</Link>}
+        {(filters.q || filters.genres.length > 0) && <Link to="/kathaharu" className="px-2 py-2 text-sm text-primary underline">सबै कथा हेर्नुहोस्</Link>}
       </Form>
-      <p className="mb-6 text-sm text-muted-foreground">{nepaliNumber(pagination.count)} कथा</p>
+      <p className="mb-6 text-sm text-muted-foreground">{filters.q && <>«{filters.q}» को खोजीमा </>}{nepaliNumber(pagination.count)} कथा</p>
       {stories.results.length ? (
         <section aria-label="कथाको सूची" className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {stories.results.map((story) => <StoryCard key={story.id} story={story} />)}
@@ -67,7 +74,7 @@ export default function Catalogue({ loaderData }: Route.ComponentProps) {
       ) : (
         <div className="rounded-lg border border-dashed p-8 text-center leading-loose">
           <h2 className="text-xl font-semibold">कुनै कथा भेटिएन।</h2>
-          <p className="mt-2 text-muted-foreground">{filters.genres.length ? "अर्को विधा छानेर हेर्नुहोस्।" : "कथाको सङ्ग्रह तयार हुँदैछ। केही समयपछि फेरि आउनुहोस्।"}</p>
+          <p className="mt-2 text-muted-foreground">{filters.q ? "अर्को शब्द लेखेर वा विधा बदलेर खोज्नुहोस्।" : filters.genres.length ? "अर्को विधा छानेर हेर्नुहोस्।" : "कथाको सङ्ग्रह तयार हुँदैछ। केही समयपछि फेरि आउनुहोस्।"}</p>
         </div>
       )}
       {pagination.pages > 1 && (

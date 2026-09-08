@@ -17,6 +17,7 @@ try {
   for (const [path, canonicalPath, noIndex] of [
     ["/", "/", false],
     ["/kathaharu", "/kathaharu", false],
+    ["/kathaharu?q=test", "/kathaharu?q=test", true],
     ["/kathaharu?page=2", "/kathaharu?page=2", false],
     ["/kathaharu?genre=7&sort=rating", "/kathaharu?genre=7&sort=rating", true],
     ["/katha/test-story", "/katha/test-story", false],

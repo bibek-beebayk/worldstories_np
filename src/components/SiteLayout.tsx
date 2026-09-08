@@ -1,3 +1,4 @@
+import AnalyticsTracker from "./AnalyticsTracker";
 import { BookOpen } from "lucide-react";
 import { Link, NavLink, Outlet, useNavigation } from "react-router";
 
@@ -5,6 +6,7 @@ export default function SiteLayout() {
   const navigation = useNavigation();
   return (
     <div className="flex min-h-screen flex-col">
+      <AnalyticsTracker />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:p-4">मुख्य सामग्रीमा जानुहोस्</a>
       <header className="border-b bg-background">
         <div className="container flex flex-wrap items-center justify-between gap-4 py-5">

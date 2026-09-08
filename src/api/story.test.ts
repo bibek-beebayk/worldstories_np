@@ -13,7 +13,7 @@ function mockResponse(body: unknown = {}) {
 describe("Nepali catalogue API", () => {
   it("scopes every endpoint by the editorial flag without filtering language", async () => {
     const fetchMock = mockResponse();
-    await storyApi.getStories({ page: 2, genres: [3, 7], sort: "rating" });
+    await storyApi.getStories({ page: 2, genres: [3, 7], sort: "rating", q: "सिंह & खरायो" });
     await storyApi.getStory("कथा");
     await storyApi.getChapter("कथा", "पहिलो भाग");
     await storyApi.getGenres();
@@ -22,6 +22,7 @@ describe("Nepali catalogue API", () => {
       expect(url.searchParams.get("show_in_nepali_site")).toBe("true");
       expect(url.searchParams.has("language")).toBe(false);
     }
+    expect(urls[0].searchParams.get("q")).toBe("सिंह & खरायो");
     expect(urls[0].searchParams.get("page")).toBe("2");
     expect(urls[0].searchParams.get("genres")).toBe("3,7");
     expect(urls[0].searchParams.get("sort")).toBe("rating");

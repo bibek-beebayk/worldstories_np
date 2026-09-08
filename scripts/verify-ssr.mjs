@@ -55,6 +55,18 @@ try {
     console.log(`${userAgent}: home, filtered catalogue, first chapter and next chapter SSR passed`);
   }
 
+  const searchTerm = "सिंह & खरायो";
+  const search = await render(`/kathaharu?q=${encodeURIComponent(searchTerm)}&genre=7&sort=rating&page=2`);
+  assert.equal(search.response.status, 200);
+  assert.equal(search.calls.find((url) => url.pathname === "/api/stories/").searchParams.get("q"), searchTerm);
+  assert.match(search.html, /name="q"/);
+  assert.match(search.html, /value="सिंह &amp; खरायो"/);
+  assert.match(search.html, /noindex, follow/);
+  assert.ok(search.html.includes(new URLSearchParams({ q: searchTerm }).toString()));
+  const emptySearch = await render(`/kathaharu?q=${encodeURIComponent(searchTerm)}`, { empty: true });
+  assert.match(emptySearch.html, /अर्को शब्द लेखेर वा विधा बदलेर खोज्नुहोस्/);
+  console.log("Search SSR: query forwarding, form state, pagination, noindex and empty results passed");
+
   const emptyHome = await render("/", { empty: true });
   assert.equal(emptyHome.response.status, 200);
   assert.match(emptyHome.html, /कथाको सङ्ग्रह तयार हुँदैछ/);

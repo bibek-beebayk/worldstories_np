@@ -3,6 +3,7 @@ import type { Chapter, Genre, StoryDetail, StoryListResponse } from "./types";
 
 export interface StoryFilters {
   page?: number;
+  q?: string;
   genres?: number[];
   sort?: "recent" | "rating" | "views";
 }
@@ -10,11 +11,12 @@ export interface StoryFilters {
 const selection = "show_in_nepali_site=true";
 
 export const storyApi = {
-  getStories: ({ page = 1, genres = [], sort = "recent" }: StoryFilters = {}) => {
+  getStories: ({ page = 1, genres = [], sort = "recent", q = "" }: StoryFilters = {}) => {
     const params = new URLSearchParams(selection);
     params.set("page", String(page));
     params.set("genres", genres.join(","));
     params.set("sort", sort);
+    if (q.trim()) params.set("q", q.trim());
     return apiClient<StoryListResponse>(`/stories/?${params}`);
   },
   getStory: (slug: string) =>
